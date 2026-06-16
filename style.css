@@ -21,6 +21,11 @@
 
 * { box-sizing: border-box; }
 
+/* O atributo nativo [hidden] precisa vencer as classes de display (grid/flex)
+   definidas mais abaixo (cards-grid, badges-grid, etc.), senão as seções
+   aparecem antes mesmo do upload das planilhas. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: radial-gradient(circle at top left, #161b29 0%, var(--bg) 55%);
