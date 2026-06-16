@@ -794,6 +794,9 @@ document.getElementById("updateDashboardBtn").addEventListener("click", async ()
     processStatus.textContent = `Dashboard atualizado: ${creatives.length} criativos, ${matchedDeals}/${state.zohoRows.length} negócios do Zoho cruzados.`;
     processStatus.className = "process-status success";
     showToast("Dashboard atualizado com sucesso.", "success");
+
+    const overviewTabBtn = document.querySelector('.tab-btn[data-tab="overview"]');
+    if (overviewTabBtn) overviewTabBtn.click();
   } catch (err) {
     console.error(err);
     processStatus.textContent = `Erro ao processar planilhas: ${err.message}`;
@@ -1013,4 +1016,15 @@ document.getElementById("sendReportBtn").addEventListener("click", async () => {
   } finally {
     btn.disabled = !(state.creatives.length > 0);
   }
+});
+
+/* ---------- Navegação por abas ---------- */
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".tab-panel").forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.tab === target);
+    });
+  });
 });

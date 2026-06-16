@@ -4,13 +4,15 @@ Dashboard de performance de criativos que cruza exportações do **Meta Ads** co
 
 100% client-side e 100% estático — apenas HTML + CSS + JavaScript puro, com SheetJS e Chart.js via CDN. Sem backend, sem build step, sem variáveis de ambiente. Feito para rodar direto no **GitHub Pages**.
 
+Visual em tema claro com banner gradiente roxo/navy no topo e navegação por abas (📁 Upload, 📊 Visão Geral, 🏆 Rankings & Gráficos, 📋 Tabela Detalhada), inspirado no painel de churn da PipeLovers.
+
 ## Estrutura do projeto
 
 ```
 .
-├── index.html      # estrutura da página
-├── style.css       # tema dark premium
-├── script.js       # leitura de planilhas, cruzamento, métricas, gráficos, report do Slack
+├── index.html      # estrutura da página (com navegação por abas)
+├── style.css       # tema claro com banner gradiente
+├── script.js       # leitura de planilhas, cruzamento, métricas, gráficos, abas, report do Slack
 └── README.md
 ```
 
@@ -25,9 +27,10 @@ Dashboard de performance de criativos que cruza exportações do **Meta Ads** co
    - Agrupa as linhas do Meta por criativo (campanha + conjunto + anúncio).
    - Cruza cada negócio do Zoho com o criativo correspondente: 1ª prioridade pelo nome do anúncio (`Nome do anúncio` ↔ `Meta Ads - Anuncio`), 2ª prioridade por `Meta Ads - ADs ID`, quando disponível.
    - Calcula métricas, rankings, badges e insights automáticos.
-3. Use os filtros (data, campanha, conjunto de anúncios, criativo) para refinar a visão — tudo recalcula em tempo real.
-4. Exporte os dados filtrados em CSV ou XLSX a qualquer momento.
-5. Clique em **Enviar Report** para gerar o texto do resumo (ver seção do Slack abaixo) — geração manual, nunca automática.
+3. Use os filtros (data, campanha, conjunto de anúncios, criativo) na aba **📁 Upload** para refinar a visão — tudo recalcula em tempo real.
+4. Navegue pelas abas **📊 Visão Geral**, **🏆 Rankings & Gráficos** e **📋 Tabela Detalhada** para ver cards, badges, insights, gráficos e a tabela completa. Ao atualizar o dashboard com sucesso, a aba "Visão Geral" abre automaticamente.
+5. Exporte os dados filtrados em CSV ou XLSX a qualquer momento.
+6. Clique em **Enviar Report** para gerar o texto do resumo (ver seção do Slack abaixo) — geração manual, nunca automática.
 
 ### Colunas esperadas
 
