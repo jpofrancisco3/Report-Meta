@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Report Meta Ads + Zoho CRM | PipeLovers</title>
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__brand">
+    <span class="topbar__logo">📊</span>
+    <div>
+      <h1>Report Meta Ads + Zoho CRM</h1>
+      <p class="topbar__subtitle">PipeLovers · Performance de Criativos</p>
+    </div>
+  </div>
+  <div class="topbar__actions">
+    <button id="exportCsvBtn" class="btn btn--ghost" disabled>Exportar CSV</button>
+    <button id="exportXlsxBtn" class="btn btn--ghost" disabled>Exportar XLSX</button>
+    <button id="sendReportBtn" class="btn btn--slack" disabled>Enviar Report</button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- Upload -->
+  <section class="card upload-panel">
+    <h2 class="section-title">1. Upload das planilhas</h2>
+    <div class="upload-grid">
+      <div class="upload-field">
+        <label for="metaFile">Planilha Meta Ads <span class="hint">(.xlsx, .xls, .csv)</span></label>
+        <input type="file" id="metaFile" accept=".xlsx,.xls,.csv" />
+        <span class="file-status" id="metaFileStatus">Nenhum arquivo selecionado</span>
+      </div>
+      <div class="upload-field">
+        <label for="zohoFile">Planilha Zoho CRM <span class="hint">(.xlsx, .xls, .csv)</span></label>
+        <input type="file" id="zohoFile" accept=".xlsx,.xls,.csv" />
+        <span class="file-status" id="zohoFileStatus">Nenhum arquivo selecionado</span>
+      </div>
+    </div>
+    <div class="upload-footer">
+      <button id="updateDashboardBtn" class="btn btn--primary" disabled>Atualizar Dashboard</button>
+      <span id="processStatus" class="process-status"></span>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="card filters-panel" id="filtersPanel" hidden>
+    <h2 class="section-title">Filtros</h2>
+    <div class="filters-grid">
+      <div class="filter-field">
+        <label for="filterStart">Data início</label>
+        <input type="date" id="filterStart" />
+      </div>
+      <div class="filter-field">
+        <label for="filterEnd">Data fim</label>
+        <input type="date" id="filterEnd" />
+      </div>
+      <div class="filter-field">
+        <label for="filterCampanha">Campanha</label>
+        <select id="filterCampanha"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filterConjunto">Conjunto de anúncios</label>
+        <select id="filterConjunto"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filterCriativo">Criativo/Anúncio</label>
+        <input type="text" id="filterCriativo" placeholder="Buscar por nome do anúncio" />
+      </div>
+      <div class="filter-field filter-field--action">
+        <button id="clearFiltersBtn" class="btn btn--ghost">Limpar filtros</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top cards -->
+  <section class="cards-grid" id="cardsGrid" hidden>
+    <div class="metric-card"><span class="metric-label">Investimento Total</span><span class="metric-value" id="cardInvestimento">—</span></div>
+    <div class="metric-card"><span class="metric-label">Impressões</span><span class="metric-value" id="cardImpressoes">—</span></div>
+    <div class="metric-card"><span class="metric-label">Cliques</span><span class="metric-value" id="cardCliques">—</span></div>
+    <div class="metric-card"><span class="metric-label">Leads Meta</span><span class="metric-value" id="cardLeadsMeta">—</span></div>
+    <div class="metric-card"><span class="metric-label">Leads Zoho</span><span class="metric-value" id="cardLeadsZoho">—</span></div>
+    <div class="metric-card metric-card--highlight"><span class="metric-label">Reuniões Geradas</span><span class="metric-value" id="cardReunioes">—</span></div>
+    <div class="metric-card metric-card--highlight-strong"><span class="metric-label">Assinaturas Realizadas</span><span class="metric-value" id="cardAssinaturas">—</span></div>
+    <div class="metric-card"><span class="metric-label">CPL Meta</span><span class="metric-value" id="cardCplMeta">—</span></div>
+    <div class="metric-card"><span class="metric-label">Custo por Reunião</span><span class="metric-value" id="cardCustoReuniao">—</span></div>
+    <div class="metric-card"><span class="metric-label">Custo por Assinatura</span><span class="metric-value" id="cardCustoAssinatura">—</span></div>
+  </section>
+
+  <!-- Badges -->
+  <section class="badges-grid" id="badgesGrid" hidden>
+    <div class="badge-card badge-card--gold">
+      <span class="badge-emoji">🥇</span>
+      <div>
+        <span class="badge-title">Melhor Criativo por Assinaturas</span>
+        <span class="badge-value" id="badgeAssinaturas">—</span>
+      </div>
+    </div>
+    <div class="badge-card badge-card--silver">
+      <span class="badge-emoji">🥈</span>
+      <div>
+        <span class="badge-title">Melhor Criativo por Reuniões</span>
+        <span class="badge-value" id="badgeReunioes">—</span>
+      </div>
+    </div>
+    <div class="badge-card badge-card--bronze">
+      <span class="badge-emoji">🥉</span>
+      <div>
+        <span class="badge-title">Melhor Criativo por Leads</span>
+        <span class="badge-value" id="badgeLeads">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insights -->
+  <section class="card insights-panel" id="insightsPanel" hidden>
+    <h2 class="section-title">Insights Automáticos</h2>
+    <ul class="insights-list" id="insightsList"></ul>
+  </section>
+
+  <!-- Rankings -->
+  <section class="rankings-grid" id="rankingsGrid" hidden>
+    <div class="card ranking-card">
+      <h3 class="section-title section-title--sm">🥇 Melhores Criativos por Assinaturas</h3>
+      <ol class="ranking-list" id="ranking1List"></ol>
+    </div>
+    <div class="card ranking-card">
+      <h3 class="section-title section-title--sm">🥈 Melhores Criativos por Reuniões</h3>
+      <ol class="ranking-list" id="ranking2List"></ol>
+    </div>
+    <div class="card ranking-card">
+      <h3 class="section-title section-title--sm">🥉 Melhores Criativos por Leads</h3>
+      <ol class="ranking-list" id="ranking3List"></ol>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="charts-grid" id="chartsGrid" hidden>
+    <div class="card chart-card"><h3 class="chart-title">Top Criativos por Leads</h3><canvas id="chartLeads"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">Top Criativos por Reuniões</h3><canvas id="chartReunioes"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">Top Criativos por Assinaturas</h3><canvas id="chartAssinaturas"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">Investimento por Criativo</h3><canvas id="chartInvestimento"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">CPL por Criativo</h3><canvas id="chartCpl"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">Custo por Reunião</h3><canvas id="chartCustoReuniao"></canvas></div>
+    <div class="card chart-card"><h3 class="chart-title">Custo por Assinatura</h3><canvas id="chartCustoAssinatura"></canvas></div>
+  </section>
+
+  <!-- Table -->
+  <section class="card table-panel" id="tablePanel" hidden>
+    <div class="table-panel__header">
+      <h2 class="section-title">Tabela por Criativo/Anúncio</h2>
+      <input type="search" id="tableSearch" placeholder="Buscar criativo ou campanha..." />
+    </div>
+    <div class="table-scroll">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th data-key="anuncio">Nome do anúncio</th>
+            <th data-key="campanha">Campanha</th>
+            <th data-key="valorGasto">Valor gasto</th>
+            <th data-key="impressoes">Impressões</th>
+            <th data-key="cliques">Cliques</th>
+            <th data-key="ctr">CTR</th>
+            <th data-key="cpc">CPC</th>
+            <th data-key="leadsMeta">Leads Meta</th>
+            <th data-key="leadsZoho">Leads Zoho</th>
+            <th data-key="reunioes">Reuniões Geradas</th>
+            <th data-key="assinaturas">Assinaturas Realizadas</th>
+            <th data-key="custoReuniao">Custo/Reunião</th>
+            <th data-key="custoAssinatura">Custo/Assinatura</th>
+            <th data-key="taxaReuniao">Taxa Lead→Reunião</th>
+            <th data-key="taxaAssinatura">Taxa Lead→Assinatura</th>
+          </tr>
+        </thead>
+        <tbody id="mainTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<footer class="footer">
+  <p>Report Meta Ads + Zoho CRM · PipeLovers — dados processados localmente no navegador.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

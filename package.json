@@ -1,0 +1,12 @@
+{
+  "name": "report-meta-zoho",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dashboard de Performance de Criativos — Meta Ads + Zoho CRM + Slack (PipeLovers)",
+  "scripts": {
+    "dev": "npx serve ."
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
